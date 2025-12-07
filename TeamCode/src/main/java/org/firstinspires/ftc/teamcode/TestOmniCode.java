@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -63,26 +64,45 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
+@TeleOp(name="Basic: Omni Linear OpMode", group="Robot")
 @Disabled
 public class TestOmniCode extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeftDrive = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
+    private DcMotor frontLeftDrive;
+    private DcMotor backLeftDrive;
+    private DcMotor frontRightDrive;
+    private DcMotor backRightDrive;
+    private DcMotor INTAKE;
+    private Servo IntakePivotLeft;
+    private Servo IntakePivotRight;
+    private DcMotor LAUNCH1;
+    private DcMotor LAUNCH2;
+    private Servo Spindexer;
 
     @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "FL");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "BL");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "FR");
+        backRightDrive = hardwareMap.get(DcMotor.class, "BR");
+
+        INTAKE = hardwareMap.get(DcMotor.class, "INTAKE");
+        IntakePivotLeft = hardwareMap.get(Servo.class, "IntakePivotLeft");
+        IntakePivotRight = hardwareMap.get(Servo.class, "IntakePivotRight");
+
+        INTAKE.setDirection(DcMotor.Direction.REVERSE);
+        IntakePivotLeft.setDirection(Servo.Direction.REVERSE);
+        IntakePivotRight.setDirection(Servo.Direction.FORWARD);
+
+        LAUNCH1 = hardwareMap.get(DcMotor.class, "LAUNCH1");
+        LAUNCH2 = hardwareMap.get(DcMotor.class, "LAUNCH2");
+
+        Spindexer = hardwareMap.get(Servo.class, "Spindexer");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!

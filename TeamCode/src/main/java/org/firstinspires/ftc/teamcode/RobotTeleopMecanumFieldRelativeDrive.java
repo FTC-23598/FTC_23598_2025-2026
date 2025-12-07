@@ -54,8 +54,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-@TeleOp(name = "Robot: Field Relative Mecanum Drive", group = "Robot")
-// @Disabled
+@TeleOp(name = "Main Robot Drive (it cooks)", group = "Robot")
 public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     // This declares the four motors needed
     DcMotor frontLeftDrive;
@@ -66,9 +65,14 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     private DcMotor INTAKE;
     private Servo IntakePivotLeft;
     private Servo IntakePivotRight;
+    private Servo LiftLeft;
+    private Servo LiftRight;
     private DcMotor LAUNCH1;
     private DcMotor LAUNCH2;
     private Servo Spindexer;
+
+    boolean LiftToggle = false;
+    boolean LauncherToggle = false;
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -83,6 +87,11 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         INTAKE = hardwareMap.get(DcMotor.class, "INTAKE");
         IntakePivotLeft = hardwareMap.get(Servo.class, "IntakePivotLeft");
         IntakePivotRight = hardwareMap.get(Servo.class, "IntakePivotRight");
+
+        LiftLeft = hardwareMap.get(Servo.class, "LiftLeft");
+        LiftRight = hardwareMap.get(Servo.class, "LiftRight");
+        LiftLeft.setDirection(Servo.Direction.REVERSE);
+        LiftRight.setDirection(Servo.Direction.FORWARD);
 
         INTAKE.setDirection(DcMotor.Direction.REVERSE);
         IntakePivotLeft.setDirection(Servo.Direction.REVERSE);
@@ -109,40 +118,11 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        imu = hardwareMap.get(IMU.class, "imu");
-        // This needs to be changed to match the orientation on your robot
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-
-        RevHubOrientationOnRobot orientationOnRobot = new
-                RevHubOrientationOnRobot(logoDirection, usbDirection);
-        imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
     @Override
     public void loop() {
-        telemetry.addLine("Press A to reset Yaw");
-        telemetry.addLine("Hold left bumper to drive in robot relative");
-        telemetry.addLine("The left joystick sets the robot direction");
-        telemetry.addLine("Moving the right joystick left and right turns the robot");
-        telemetry.addData("Velocity", ((DcMotorEx) LAUNCH1).getVelocity());
-        telemetry.addData("Spindexer Position", Spindexer.getPosition());
 
-        // If you press the A button, then you reset the Yaw to be zero from the way
-        // the robot is currently pointing
-        if (gamepad1.a) {
-            imu.resetYaw();
-        }
-        // If you press the left bumper, you get a drive from the point of view of the robot
-        // (much like driving an RC vehicle)
-        if (gamepad1.left_bumper) {
-            drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        } else {
-            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        }
 
         if (gamepad1.right_bumper) {
             IntakeServos(1);
@@ -160,18 +140,62 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
             }
         }
 
-        if (gamepad1.dpadUpWasPressed() && ((DcMotorEx) LAUNCH1).getVelocity() <= 0) {
-            LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            LAUNCH1.setPower(1);
-            LAUNCH2.setPower(1);
-            ((DcMotorEx) LAUNCH1).setVelocity(1075);
-            ((DcMotorEx) LAUNCH2).setVelocity(1075);
-        } else if (gamepad1.dpadUpWasPressed() && ((DcMotorEx) LAUNCH1).getVelocity() > 0) {
-            LAUNCH1.setPower(0);
-            LAUNCH2.setPower(0);
-            ((DcMotorEx) LAUNCH1).setVelocity(0);
-            ((DcMotorEx) LAUNCH2).setVelocity(0);
+        if (gamepad1.xWasPressed()) {
+            if (LiftToggle == true) {
+                LiftToggle = false;
+            } else {
+                LiftToggle = true;
+            }
+
+
+            if (LiftToggle == true) {
+                LiftLeft.setPosition(0.5);
+                LiftRight.setPosition(0.5);
+            } else {
+                LiftLeft.setPosition(0);
+                LiftRight.setPosition(0);
+            }
+
+
+        }
+
+//        if (gamepad1.dpadUpWasPressed() && ((DcMotorEx) LAUNCH1).getVelocity() <= 0) {
+//            LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            LAUNCH1.setPower(1);
+//            LAUNCH2.setPower(1);
+//            ((DcMotorEx) LAUNCH1).setVelocity(1075);
+//            ((DcMotorEx) LAUNCH2).setVelocity(1075);
+//        } else if (gamepad1.dpadUpWasPressed() && ((DcMotorEx) LAUNCH1).getVelocity() > 0) {
+//            LAUNCH1.setPower(0);
+//            LAUNCH2.setPower(0);
+//            ((DcMotorEx) LAUNCH1).setVelocity(0);
+//            ((DcMotorEx) LAUNCH2).setVelocity(0);
+//        }
+
+        if (gamepad1.dpadUpWasPressed()) {
+            if (LauncherToggle == true) {
+                LauncherToggle = false;
+            } else {
+                LauncherToggle = true;
+            }
+
+
+            if (LauncherToggle == true) {
+                LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                LAUNCH1.setPower(1);
+                LAUNCH2.setPower(1);
+                ((DcMotorEx) LAUNCH1).setVelocity(1075);
+                ((DcMotorEx) LAUNCH2).setVelocity(1075);
+            } else {
+                LAUNCH1.setPower(0);
+                LAUNCH2.setPower(0);
+                ((DcMotorEx) LAUNCH1).setVelocity(0);
+                ((DcMotorEx) LAUNCH2).setVelocity(0);
+            }
+
+
         }
 
         if (gamepad1.dpad_left) {
@@ -188,6 +212,43 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
             }
         }
 
+        double max;
+
+        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+        double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+        double lateral =  gamepad1.left_stick_x;
+        double yaw     =  gamepad1.right_stick_x;
+
+        // Combine the joystick requests for each axis-motion to determine each wheel's power.
+        // Set up a variable for each drive wheel to save the power level for telemetry.
+        double frontLeftPower  = axial + lateral + yaw;
+        double frontRightPower = axial - lateral - yaw;
+        double backLeftPower   = axial - lateral + yaw;
+        double backRightPower  = axial + lateral - yaw;
+
+        // Normalize the values so no wheel power exceeds 100%
+        // This ensures that the robot maintains the desired motion.
+        max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
+
+        if (max > 1.0) {
+            frontLeftPower  /= max;
+            frontRightPower /= max;
+            backLeftPower   /= max;
+            backRightPower  /= max;
+        }
+
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
+
+        telemetry.addData("Velocity", ((DcMotorEx) LAUNCH1).getVelocity());
+        telemetry.addData("Spindexer Position", Spindexer.getPosition());
+        telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
+        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
+        telemetry.update();
     }
 
     // This routine drives the robot field relative
