@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -76,6 +77,11 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
+
+    ElapsedTime timer = new ElapsedTime();
+    boolean SpindexerSpinningToggle = false;
+
+    boolean wasSpindexerSpinning = false;
 
     @Override
     public void init() {
@@ -127,18 +133,34 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         if (gamepad1.right_bumper) {
             IntakeServos(1);
             INTAKE.setPower(1);
+            SpindexerSpinningToggle = true;
+
         } else if (gamepad1.left_bumper) {
             IntakeServos(1);
             INTAKE.setPower(-1);
+            SpindexerSpinningToggle = false;
         } else {
             if (gamepad1.a) {
                 INTAKE.setPower(1);
                 IntakeServos(0);
+                SpindexerSpinningToggle = false;
             } else {
                 IntakeServos(0.5);
                 INTAKE.setPower(0);
+                SpindexerSpinningToggle = false;
             }
         }
+
+        if (SpindexerSpinningToggle == true && timer.seconds() > 3) {
+            Spindexer.setPosition(Spindexer.getPosition() + 0.3);
+            timer.reset();
+        }
+
+        if (wasSpindexerSpinning && SpindexerSpinningToggle == false) {
+            timer.reset();
+        }
+
+        wasSpindexerSpinning = SpindexerSpinningToggle;
 
         if (gamepad1.xWasPressed()) {
             if (LiftToggle == true) {
