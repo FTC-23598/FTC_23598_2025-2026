@@ -103,7 +103,7 @@ public class TestOmniCode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        waitForStart();
+        waitForStart(); // This has us wait until we press the start button on the Drivers Hub
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
