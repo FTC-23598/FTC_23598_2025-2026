@@ -151,8 +151,13 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
             }
         }
 
+        if (Spindexer.getPosition() > 1) {
+            Spindexer.setPosition(0);
+        }
+
+
         if (SpindexerSpinningToggle == true && timer.seconds() > 3) {
-            Spindexer.setPosition(Spindexer.getPosition() + 0.3); //TODO: Reset this value if it goes past zero. @Matthew
+            Spindexer.setPosition(Spindexer.getPosition() + 0.3);
             timer.reset();
         }
 
