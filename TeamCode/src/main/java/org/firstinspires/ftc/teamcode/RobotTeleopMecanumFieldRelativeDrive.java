@@ -28,13 +28,10 @@
  */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -78,13 +75,13 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
 
-    ElapsedTime timer = new ElapsedTime();
-    boolean SpindexerSpinningToggle = false;
+    ElapsedTime TimerSpindexer = new ElapsedTime(); // Timer for automatically rotating the spindexer
+    boolean IsSpindexerSpinning = false; // Checks if spindexer is spinning!
 
-    boolean wasSpindexerSpinning = false;
+    boolean WasSpindexerSpinning = false; // Checks if spindexer was spinning in the last loop
 
     @Override
-    public void init() {
+    public void init() { // The initialization defines hardware and how they are configured
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FL");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FR");
         backLeftDrive = hardwareMap.get(DcMotor.class, "BL");
@@ -133,21 +130,21 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         if (gamepad1.right_bumper) {
             IntakeServos(1);
             INTAKE.setPower(1);
-            SpindexerSpinningToggle = true;
+            IsSpindexerSpinning = true;
 
         } else if (gamepad1.left_bumper) {
             IntakeServos(1);
             INTAKE.setPower(-1);
-            SpindexerSpinningToggle = false;
+            IsSpindexerSpinning = false;
         } else {
             if (gamepad1.a) {
                 INTAKE.setPower(1);
                 IntakeServos(0);
-                SpindexerSpinningToggle = false;
+                IsSpindexerSpinning = false;
             } else {
                 IntakeServos(0.5);
                 INTAKE.setPower(0);
-                SpindexerSpinningToggle = false;
+                IsSpindexerSpinning = false;
             }
         }
 
@@ -156,16 +153,16 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         }
 
 
-        if (SpindexerSpinningToggle == true && timer.seconds() > 3) {
+        if (IsSpindexerSpinning == true && TimerSpindexer.seconds() > 3) {
             Spindexer.setPosition(Spindexer.getPosition() + 0.3);
-            timer.reset();
+            TimerSpindexer.reset();
         }
 
-        if (wasSpindexerSpinning && SpindexerSpinningToggle == false) {
-            timer.reset();
+        if (WasSpindexerSpinning && IsSpindexerSpinning == false) {
+            TimerSpindexer.reset();
         }
 
-        wasSpindexerSpinning = SpindexerSpinningToggle;
+        WasSpindexerSpinning = IsSpindexerSpinning;
 
         if (gamepad1.xWasPressed()) {
             if (LiftToggle == true) {
