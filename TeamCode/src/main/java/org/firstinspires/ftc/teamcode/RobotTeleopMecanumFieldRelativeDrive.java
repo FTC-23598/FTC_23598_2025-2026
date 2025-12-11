@@ -85,41 +85,39 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
 
     @Override
     public void init() {
+        // Names all motors to be useable by code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FL");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FR");
         backLeftDrive = hardwareMap.get(DcMotor.class, "BL");
         backRightDrive = hardwareMap.get(DcMotor.class, "BR");
-
         INTAKE = hardwareMap.get(DcMotor.class, "INTAKE");
-        IntakePivotLeft = hardwareMap.get(Servo.class, "IntakePivotLeft");
-        IntakePivotRight = hardwareMap.get(Servo.class, "IntakePivotRight");
-
-        LiftLeft = hardwareMap.get(Servo.class, "LiftLeft");
-        LiftRight = hardwareMap.get(Servo.class, "LiftRight");
-        LiftLeft.setDirection(Servo.Direction.REVERSE);
-        LiftRight.setDirection(Servo.Direction.FORWARD);
-
-        INTAKE.setDirection(DcMotor.Direction.REVERSE);
-        IntakePivotLeft.setDirection(Servo.Direction.REVERSE);
-        IntakePivotRight.setDirection(Servo.Direction.FORWARD);
-
         LAUNCH1 = hardwareMap.get(DcMotor.class, "LAUNCH1");
         LAUNCH2 = hardwareMap.get(DcMotor.class, "LAUNCH2");
 
-        Spindexer = hardwareMap.get(Servo.class, "Spindexer");
-
-        // We set the left motors in reverse which is needed for drive trains where the left
-        // motors are opposite to the right ones.
+        // Sets the directions of all motors
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-
         LAUNCH1.setDirection(DcMotor.Direction.FORWARD);
         LAUNCH2.setDirection(DcMotor.Direction.REVERSE);
+        INTAKE.setDirection(DcMotor.Direction.REVERSE);
 
-        // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
-        // wires, you should remove these
+        // Names all servos to be useable by code
+        IntakePivotLeft = hardwareMap.get(Servo.class, "IntakePivotLeft");
+        IntakePivotRight = hardwareMap.get(Servo.class, "IntakePivotRight");
+        LiftLeft = hardwareMap.get(Servo.class, "LiftLeft");
+        LiftRight = hardwareMap.get(Servo.class, "LiftRight");
+        Spindexer = hardwareMap.get(Servo.class, "Spindexer");
+
+        // Sets the directions of all servos
+        LiftLeft.setDirection(Servo.Direction.REVERSE);
+        LiftRight.setDirection(Servo.Direction.FORWARD);
+        IntakePivotLeft.setDirection(Servo.Direction.REVERSE);
+        IntakePivotRight.setDirection(Servo.Direction.FORWARD);
+
+
+        // This uses RUN_USING_ENCODER to be more accurate
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
