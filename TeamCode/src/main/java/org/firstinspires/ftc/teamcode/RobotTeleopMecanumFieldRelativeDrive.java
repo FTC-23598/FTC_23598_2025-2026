@@ -208,7 +208,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
                 LauncherToggle = true;
             }
 
-// Raghav was here
+
             if (LauncherToggle == true) {
                 LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
