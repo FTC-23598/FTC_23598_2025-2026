@@ -130,61 +130,57 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     @Override
     public void loop() {
 
-        // Intake controller mapping
+
         if (gamepad1.right_bumper) {
-            IntakeServos(1); // Move intake rollers to intake position
-            INTAKE.setPower(1); // Run intake rollers to intake
-            SpindexerSpinningToggle = true; // Spin Spindexer when intaking
+            IntakeServos(1);
+            INTAKE.setPower(1);
+            SpindexerSpinningToggle = true;
 
         } else if (gamepad1.left_bumper) {
-            IntakeServos(1); // Move intake rollers to intake position
-            INTAKE.setPower(-1); // Spin intake rollers to outake
-            SpindexerSpinningToggle = false; // Stop Spindexer
+            IntakeServos(1);
+            INTAKE.setPower(-1);
+            SpindexerSpinningToggle = false;
         } else {
-            if (gamepad1.a) { // Launch logic
-                INTAKE.setPower(1); // Run intake rollers
-                IntakeServos(0); // Move intake rollers to launching position
-                SpindexerSpinningToggle = false; // Stop Spindexer
-            } else { // Not intaking/Launching
-                IntakeServos(0.5); // Move intake rollers to ready positions
-                INTAKE.setPower(0); // Stop intake rollers
-                SpindexerSpinningToggle = false; // Stop Spindexer
+            if (gamepad1.a) {
+                INTAKE.setPower(1);
+                IntakeServos(0);
+                SpindexerSpinningToggle = false;
+            } else {
+                IntakeServos(0.5);
+                INTAKE.setPower(0);
+                SpindexerSpinningToggle = false;
             }
         }
 
-        // Detects if Spindexer is over position 1. If so, sets to 0
         if (Spindexer.getPosition() > 1) {
             Spindexer.setPosition(0);
         }
 
-        // Adds .3 to the Spindexer position every 3 seconds when intaking
+
         if (SpindexerSpinningToggle == true && timer.seconds() > 3) {
-            Spindexer.setPosition(Spindexer.getPosition() + 0.3); // Adds .3 to spindexer position
-            timer.reset(); // Resets timer
+            Spindexer.setPosition(Spindexer.getPosition() + 0.3);
+            timer.reset();
         }
 
-        // if Spindexer is not spinning, reset timer once
         if (wasSpindexerSpinning && SpindexerSpinningToggle == false) {
             timer.reset();
         }
 
-        // Detects if spindexer was spinning
         wasSpindexerSpinning = SpindexerSpinningToggle;
 
-        // Controller mapping for the lift toggle
         if (gamepad1.xWasPressed()) {
-            if (LiftToggle == true) { // Detects if the lift is active
-                LiftToggle = false; // Disables lift
+            if (LiftToggle == true) {
+                LiftToggle = false;
             } else {
-                LiftToggle = true; // Otherwise sets lift to true
+                LiftToggle = true;
             }
 
-            // Tells the lift what position to go to
+
             if (LiftToggle == true) {
-                LiftLeft.setPosition(0.5);  // Sets lift to 'lifting' position
+                LiftLeft.setPosition(0.5);
                 LiftRight.setPosition(0.5);
             } else {
-                LiftLeft.setPosition(0); // Sets lift to 'non-lifting' position
+                LiftLeft.setPosition(0);
                 LiftRight.setPosition(0);
             }
 
@@ -205,45 +201,43 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
 //            ((DcMotorEx) LAUNCH2).setVelocity(0);
 //        }
 
-        // Toggle management for Launcher (Controller mapping)
         if (gamepad1.dpadUpWasPressed()) {
             if (LauncherToggle == true) {
-                LauncherToggle = false; // Disables launcher toggle
+                LauncherToggle = false;
             } else {
-                LauncherToggle = true; // Enables launcher toggle
+                LauncherToggle = true;
             }
 
 
             // When LauncherToggle is true, sets it to the specified velocity, or else it turns off
             if (LauncherToggle == true) {
-                LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Sets LAUNCH1 to run with encoder
-                LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Sets LAUNCH2 to run with encoder
-                LAUNCH1.setPower(1); // Sets LAUNCH1 power to 1
-                LAUNCH2.setPower(1); // Sets LAUNCH2 power to 1
-                ((DcMotorEx) LAUNCH1).setVelocity(1075); // Sets LAUNCH1 velocity to 1075
-                ((DcMotorEx) LAUNCH2).setVelocity(1075); // Sets LAUNCH1 velocity to 1075
+                LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                LAUNCH1.setPower(1);
+                LAUNCH2.setPower(1);
+                ((DcMotorEx) LAUNCH1).setVelocity(1075);
+                ((DcMotorEx) LAUNCH2).setVelocity(1075);
             } else {
-                LAUNCH1.setPower(0); // Sets LAUNCH1 power to 0
-                LAUNCH2.setPower(0); // Sets LAUNCH2 power to 0
-                ((DcMotorEx) LAUNCH1).setVelocity(0); // Sets LAUNCH1 velocity to 0
-                ((DcMotorEx) LAUNCH2).setVelocity(0); // Sets LAUNCH1 velocity to 0
+                LAUNCH1.setPower(0);
+                LAUNCH2.setPower(0);
+                ((DcMotorEx) LAUNCH1).setVelocity(0);
+                ((DcMotorEx) LAUNCH2).setVelocity(0);
             }
 
 
         }
 
-        // Controller mapping for setting Spindexer positions
         if (gamepad1.dpad_left) {
-            Spindexer.setPosition(0); // Sets Spindexer position to 0
+            Spindexer.setPosition(0);
         } else if (gamepad1.dpad_down) {
-            Spindexer.setPosition(0.41); // Sets Spindexer position to 0.41 when dpad_down is pressed
+            Spindexer.setPosition(0.41);
         } else if (gamepad1.dpad_right) {
-            Spindexer.setPosition(0.82); // Sets Spindexer position to 0.82 when dpad_right is pressed
+            Spindexer.setPosition(0.82);
         }
         if (gamepad1.aWasReleased()) {
-            Spindexer.setPosition(Spindexer.getPosition() + 0.41); // Adds 0.41 to the Spindexer position when a is released
+            Spindexer.setPosition(Spindexer.getPosition() + 0.41);
             if (Spindexer.getPosition() >= 0.83) {
-                Spindexer.setPosition(0); // If the Spindexer position is over or equal to 0.83, set it to 0
+                Spindexer.setPosition(0);
             }
         }
 
@@ -287,7 +281,6 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     }
 
     // This routine drives the robot field relative
-    // Disabled
     private void driveFieldRelative(double forward, double right, double rotate) {
         // First, convert direction being asked to drive to polar coordinates
         double theta = Math.atan2(forward, right);
