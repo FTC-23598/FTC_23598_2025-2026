@@ -64,11 +64,16 @@ public class SensorLimelight3ATest extends OpMode {
 
     @Override
     public void init() {
+        //gets the limelight
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        //selects the pipline version on the limelight
         limelight.pipelineSwitch(0);
+        // gets the imu
         imu = hardwareMap.get(IMU.class,"imu");
+        //gets how the control hub is mounted to the robot
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+        //idk
         imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
     }
     public void start(){
