@@ -66,7 +66,7 @@ public class SensorLimelight3ATest extends OpMode {
     public void init() {
         //gets the limelight
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        //selects the pipline version on the limelight
+        //selects the pipeline version on the limelight
         limelight.pipelineSwitch(0);
         // gets the imu
         imu = hardwareMap.get(IMU.class,"imu");
