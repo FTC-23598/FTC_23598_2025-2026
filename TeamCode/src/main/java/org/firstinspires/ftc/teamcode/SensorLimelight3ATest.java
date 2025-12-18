@@ -78,7 +78,7 @@ public class SensorLimelight3ATest extends OpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llResult = limelight.getLatestResult();
-        if (llResult != null && llResult.isValid());{
+        if (llResult != null && llResult.isValid()){
             Pose3D botpos = llResult.getBotpose();
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
