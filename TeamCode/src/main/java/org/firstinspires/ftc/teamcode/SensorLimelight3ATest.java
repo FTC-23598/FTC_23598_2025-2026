@@ -96,6 +96,8 @@ public class SensorLimelight3ATest extends OpMode {
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
             telemetry.addData("Tl", llResult.getTargetingLatency());
+            telemetry.update();
+
         }
     }
 }
