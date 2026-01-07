@@ -79,7 +79,7 @@ public class SensorLimelight3ATest extends OpMode {
         limelight.start();
     }
     public void loop(){
-        //gets the robots yaw putch and roll
+        //gets the robots yaw pitch and roll
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         // sends the robots yaw to limelight(probably)
         limelight.updateRobotOrientation(orientation.getYaw());
@@ -95,6 +95,7 @@ public class SensorLimelight3ATest extends OpMode {
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
+            telemetry.addData("Tl", llResult.getTargetingLatency());
         }
     }
 }
