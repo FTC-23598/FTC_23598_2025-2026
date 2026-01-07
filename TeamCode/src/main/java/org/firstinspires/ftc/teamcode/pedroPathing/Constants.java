@@ -32,13 +32,18 @@ public class Constants {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
                 .pinpointLocalizer(localizerConstants)
+                .mecanumDrivetrain(driveConstants)
                 .build();
     }
 
+    // TODO add pod location, hardware map name
+    // Pro Tip: You can test this by running Tuning.java on the robot to make sure it works as expected
+    // Pro Tip: You can use Panels to test the accuracy of the robot
+    // Pro Tip: When doing automatic tuning, make sure you have a fully charged battery and a straight line at least 48 inches long
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(-5)
             .strafePodX(0.5)
-            .distanceUnit(DistanceUnit.INCH)
+            .distanceUnit(DistanceUnit.MM)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
