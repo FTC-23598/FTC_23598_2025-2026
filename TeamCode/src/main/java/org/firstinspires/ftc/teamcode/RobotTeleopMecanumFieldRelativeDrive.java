@@ -208,8 +208,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
                 LauncherToggle = true;
             }
 
-
-            // When LauncherToggle is true, sets it to the specified velocity, or else it turns off
+// Raghav was here
             if (LauncherToggle == true) {
                 LAUNCH1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 LAUNCH2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
