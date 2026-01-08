@@ -60,7 +60,6 @@ public class SensorLimelight3ATest extends OpMode {
     private DcMotorEx turretmotor;
     private IMU imu;
 
-
     @Override
     public void init() {
         //gets the limelight
@@ -74,11 +73,15 @@ public class SensorLimelight3ATest extends OpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
         //idk
         imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
+
+        turretmotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
+        turretmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void start(){
         limelight.start();
     }
     public void loop(){
+
         //gets the robots yaw pitch and roll
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         // sends the robots yaw to limelight(probably)
@@ -86,16 +89,36 @@ public class SensorLimelight3ATest extends OpMode {
         // updates the result
         LLResult llResult = limelight.getLatestResult();
         // checks if there is a target (with != null) and make sure its valid
-        if (llResult != null && llResult.isValid()){
-
-            // robots estimated position on the field
-            Pose3D botpos = llResult.getBotpose();
+        if (llResult != null && llResult.isValid()) {
 
             //prints the targeting data on the driver hub
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
             telemetry.addData("Tl", llResult.getTargetingLatency());
+
+            // robots estimated position on the field
+            Pose3D botpose = llResult.getBotpose();
+            double angleToTargetDeg = llResult.getTx();
+            double TicksPerRev = 500.0;//placeholder
+            double GearRatio = 1.0;//placeholder
+            double currentTicks = turretmotor.getCurrentPosition();
+
+            double launcherAngleDeg = (currentTicks / (TicksPerRev * GearRatio)) *300;
+            double launcherErrorDeg = angleToTargetDeg - launcherAngleDeg;
+            telemetry.addData("launcher angle", launcherAngleDeg);
+            telemetry.addData("launcher error", launcherErrorDeg);
+
+            if (launcherAngleDeg < -300) launcherAngleDeg = -299;
+            if (launcherAngleDeg > 300) launcherAngleDeg = 299;
+
+            double kp = 0.01;
+            double motorpower = launcherErrorDeg * kp;
+            turretmotor.setPower(motorpower);
+            telemetry.update();
+        } else {
+            turretmotor.setPower(0.0);
+            telemetry.addData("Target", "not found");
             telemetry.update();
 
         }
