@@ -71,7 +71,7 @@ public class SensorLimelight3ATest extends OpMode {
         //gets how the control hub is mounted to the robot
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
-        //idk
+        // Initializes the IMU orientation
         imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
 
         turretmotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
