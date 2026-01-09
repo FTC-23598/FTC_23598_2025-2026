@@ -81,8 +81,13 @@ public class SensorLimelight3ATest extends OpMode {
         limelight.start();
     }
     public void loop(){
-
-        //gets the robots yaw pitch and roll
+        if (gamepad1.aWasPressed()) {
+            turretmotor.setPower(0.3);
+        } else if (gamepad1.bWasPressed()) {
+            turretmotor.setPower(-0.3);
+        } else {
+            turretmotor.setPower(0);
+        }
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         // sends the robots yaw to limelight(probably)
         limelight.updateRobotOrientation(orientation.getYaw());
