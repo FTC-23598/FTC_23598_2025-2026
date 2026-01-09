@@ -100,11 +100,14 @@ public class SensorLimelight3ATest extends OpMode {
             // robots estimated position on the field
             Pose3D botpose = llResult.getBotpose();
             double angleToTargetDeg = llResult.getTx();
-            double TicksPerRev = 500.0;//placeholder
-            double GearRatio = 1.0;//placeholder
+
+            double TicksPerRev = 28; //placeholder
+            double GearRatio1 = 132;//placeholder
+            double GearRatio2 = 5;//placeholder
+
             double currentTicks = turretmotor.getCurrentPosition();
 
-            double launcherAngleDeg = (currentTicks / (TicksPerRev * GearRatio)) *300;
+            double launcherAngleDeg = (currentTicks / (TicksPerRev * GearRatio1 * GearRatio2)) * 360;
             double launcherErrorDeg = angleToTargetDeg - launcherAngleDeg;
             telemetry.addData("launcher angle", launcherAngleDeg);
             telemetry.addData("launcher error", launcherErrorDeg);
