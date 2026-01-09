@@ -65,7 +65,7 @@ public class SensorLimelight3ATest extends OpMode {
         //gets the limelight
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         //selects the pipeline version on the limelight
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(1);
         // gets the imu
         imu = hardwareMap.get(IMU.class,"imu");
         //gets how the control hub is mounted to the robot
