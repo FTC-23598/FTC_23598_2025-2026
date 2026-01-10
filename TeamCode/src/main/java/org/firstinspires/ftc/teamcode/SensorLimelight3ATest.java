@@ -75,19 +75,12 @@ public class SensorLimelight3ATest extends OpMode {
         imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
 
         turretmotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turretmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turretmotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void start(){
         limelight.start();
     }
     public void loop(){
-        if (gamepad1.aWasPressed()) {
-            turretmotor.setPower(0.7);
-        } else if (gamepad1.bWasPressed()) {
-            turretmotor.setPower(-0.7);
-        } else {
-            turretmotor.setPower(0);
-        }
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         // sends the robots yaw to limelight(probably)
         limelight.updateRobotOrientation(orientation.getYaw());
@@ -120,8 +113,13 @@ public class SensorLimelight3ATest extends OpMode {
             if (launcherAngleDeg < -300) launcherAngleDeg = -299;
             if (launcherAngleDeg > 300) launcherAngleDeg = 299;
 
-            double kp = 0.02;
+            double kp = 0.05;
+            double min_power = 0.2;
+
             double motorpower = launcherErrorDeg * kp;
+            if (Math.abs(motorpower) > 0){
+                motorpower +=  Math.signum(motorpower) * min_power;
+            }
             turretmotor.setPower(motorpower);
             telemetry.update();
         } else {
