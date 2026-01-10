@@ -113,7 +113,7 @@ public class SensorLimelight3ATest extends OpMode {
             if (launcherAngleDeg < -300) launcherAngleDeg = -299;
             if (launcherAngleDeg > 300) launcherAngleDeg = 299;
 
-            double kp = 0.05;
+            double kp = 0.03;
             double min_power = 0.2;
 
             double motorpower = launcherErrorDeg * kp;
