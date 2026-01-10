@@ -82,9 +82,9 @@ public class SensorLimelight3ATest extends OpMode {
     }
     public void loop(){
         if (gamepad1.aWasPressed()) {
-            turretmotor.setPower(0.3);
+            turretmotor.setPower(0.7);
         } else if (gamepad1.bWasPressed()) {
-            turretmotor.setPower(-0.3);
+            turretmotor.setPower(-0.7);
         } else {
             turretmotor.setPower(0);
         }
@@ -120,7 +120,7 @@ public class SensorLimelight3ATest extends OpMode {
             if (launcherAngleDeg < -300) launcherAngleDeg = -299;
             if (launcherAngleDeg > 300) launcherAngleDeg = 299;
 
-            double kp = 0.01;
+            double kp = 0.02;
             double motorpower = launcherErrorDeg * kp;
             turretmotor.setPower(motorpower);
             telemetry.update();
