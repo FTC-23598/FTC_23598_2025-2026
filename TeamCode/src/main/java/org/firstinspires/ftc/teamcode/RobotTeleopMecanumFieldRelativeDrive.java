@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -41,6 +42,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -150,6 +153,53 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     }
     @Override
     public void loop() {
+            YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+            // sends the robots yaw to limelight(probably)
+            limelight.updateRobotOrientation(orientation.getYaw());
+            // updates the result
+            LLResult llResult = limelight.getLatestResult();
+            // checks if there is a target (with != null) and make sure its valid
+            if (llResult != null && llResult.isValid()) {
+
+                //prints the targeting data on the driver hub
+                telemetry.addData("Tx", llResult.getTx());
+                telemetry.addData("Ty", llResult.getTy());
+                telemetry.addData("Ta", llResult.getTa());
+                telemetry.addData("Tl", llResult.getTargetingLatency());
+
+                // robots estimated position on the field
+                Pose3D botpose = llResult.getBotpose();
+                double angleToTargetDeg = llResult.getTx();
+
+                double TicksPerRev = 28; //placeholder
+                double GearRatio1 = 132;//placeholder
+                double GearRatio2 = 5;//placeholder
+
+                double currentTicks = turret.getCurrentPosition();
+
+                double launcherAngleDeg = (currentTicks / (TicksPerRev * GearRatio1 * GearRatio2)) * 360;
+                double launcherErrorDeg = angleToTargetDeg - launcherAngleDeg;
+                telemetry.addData("launcher angle", launcherAngleDeg);
+                telemetry.addData("launcher error", launcherErrorDeg);
+
+                if (launcherAngleDeg < -300) launcherAngleDeg = -299;
+                if (launcherAngleDeg > 300) launcherAngleDeg = 299;
+
+                double kp = 0.005;
+                double min_power = 0.1;
+
+                double motorpower = launcherErrorDeg * kp;
+                if (Math.abs(motorpower) > 0){
+                    motorpower +=  Math.signum(motorpower) * min_power;
+                }
+                turret.setPower(motorpower);
+                telemetry.update();
+            } else {
+                turret.setPower(0.0);
+                telemetry.addData("Target", "not found");
+                telemetry.update();
+
+            }
 
 
         if (gamepad1.right_bumper) {
