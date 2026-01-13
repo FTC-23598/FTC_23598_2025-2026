@@ -57,7 +57,7 @@ import java.util.List;
 public class SensorLimelight3ATest extends OpMode {
 
     private Limelight3A limelight;
-    private DcMotorEx turretmotor;
+    private DcMotorEx turret;
     private IMU imu;
 
     @Override
@@ -74,8 +74,8 @@ public class SensorLimelight3ATest extends OpMode {
         // Initializes the IMU orientation
         imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
 
-        turretmotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turretmotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turret = hardwareMap.get(DcMotorEx.class, "turret");
+        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void start(){
         limelight.start();
@@ -103,7 +103,7 @@ public class SensorLimelight3ATest extends OpMode {
             double GearRatio1 = 132;//placeholder
             double GearRatio2 = 5;//placeholder
 
-            double currentTicks = turretmotor.getCurrentPosition();
+            double currentTicks = turret.getCurrentPosition();
 
             double launcherAngleDeg = (currentTicks / (TicksPerRev * GearRatio1 * GearRatio2)) * 360;
             double launcherErrorDeg = angleToTargetDeg - launcherAngleDeg;
@@ -113,17 +113,17 @@ public class SensorLimelight3ATest extends OpMode {
             if (launcherAngleDeg < -300) launcherAngleDeg = -299;
             if (launcherAngleDeg > 300) launcherAngleDeg = 299;
 
-            double kp = 0.03;
-            double min_power = 0.2;
+            double kp = 0.005;
+            double min_power = 0.1;
 
             double motorpower = launcherErrorDeg * kp;
             if (Math.abs(motorpower) > 0){
                 motorpower +=  Math.signum(motorpower) * min_power;
             }
-            turretmotor.setPower(motorpower);
+            turret.setPower(motorpower);
             telemetry.update();
         } else {
-            turretmotor.setPower(0.0);
+            turret.setPower(0.0);
             telemetry.addData("Target", "not found");
             telemetry.update();
 

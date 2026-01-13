@@ -72,6 +72,8 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
     private DcMotor LAUNCH2;
     private Servo Spindexer;
 
+    private DcMotor turret;
+
     boolean LiftToggle = false;
     boolean LauncherToggle = false;
 
