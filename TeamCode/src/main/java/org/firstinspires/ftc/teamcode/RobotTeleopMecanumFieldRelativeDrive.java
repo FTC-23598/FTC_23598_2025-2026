@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -79,7 +80,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
-
+    private Limelight3A limelight;
     ElapsedTime timer = new ElapsedTime();
     boolean SpindexerSpinningToggle = false;
 
@@ -87,6 +88,22 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
 
     @Override
     public void init() {
+//limelight stuffs
+        //gets the limelight
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        //selects the pipeline version on the limelight
+        limelight.pipelineSwitch(1);
+        // gets the imu
+        imu = hardwareMap.get(IMU.class,"imu");
+        //gets how the control hub is mounted to the robot
+        RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+        // Initializes the IMU orientation
+        imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
+
+        turret = hardwareMap.get(DcMotorEx.class, "turret");
+        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Names all motors to be useable by code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FL");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FR");
@@ -128,7 +145,9 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
+    public void start(){
+        limelight.start();
+    }
     @Override
     public void loop() {
 
