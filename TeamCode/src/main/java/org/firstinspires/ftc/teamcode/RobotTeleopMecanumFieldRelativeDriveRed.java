@@ -31,12 +31,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -59,8 +57,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-@TeleOp(name = "Main Robot Drive (it cooks)", group = "Robot")
-public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
+@TeleOp(name = "Main Robot Drive (Red)", group = "Robot")
+public class RobotTeleopMecanumFieldRelativeDriveRed extends OpMode {
     // This declares the four motors needed
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -96,6 +94,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         //selects the pipeline version on the limelight
         limelight.pipelineSwitch(1);
+
         // gets the imu
         imu = hardwareMap.get(IMU.class,"imu");
         //gets how the control hub is mounted to the robot
@@ -104,7 +103,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         // Initializes the IMU orientation
         imu.initialize((new IMU.Parameters(revHubOrientationOnRobot)));
 
-        turret = hardwareMap.get(DcMotorEx.class, "turret");
+        turret = hardwareMap.get(DcMotorEx.class, "turtle");
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Names all motors to be useable by code
@@ -133,10 +132,10 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         LAUNCH1.setDirection(DcMotor.Direction.FORWARD);
         LAUNCH2.setDirection(DcMotor.Direction.REVERSE);
@@ -200,7 +199,6 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
                 telemetry.update();
 
             }
-
 
         if (gamepad1.right_bumper) {
             IntakeServos(1);
